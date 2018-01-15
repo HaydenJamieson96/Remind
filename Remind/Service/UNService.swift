@@ -30,6 +30,19 @@ class UNService: NSObject {
     
     func configure() {
         unCenter.delegate = self
+        setupActionsAndCategories()
+    }
+    
+    func setupActionsAndCategories() {
+        let timerAction = UNNotificationAction(identifier: NotificationActionID.timer.rawValue, title: "Run timer logic.", options: [.authenticationRequired])
+        let dateAction = UNNotificationAction(identifier: NotificationActionID.date.rawValue, title: "Run date logic.", options: [.destructive])
+        let locationAction = UNNotificationAction(identifier: NotificationActionID.location.rawValue, title: "Run location logic.", options: [.foreground])
+        
+        let timerCategory = UNNotificationCategory(identifier: NotificationCategory.timer.rawValue, actions: [timerAction], intentIdentifiers: [])
+        let dateCategory = UNNotificationCategory(identifier: NotificationCategory.date.rawValue, actions: [dateAction], intentIdentifiers: [])
+        let locationCategory = UNNotificationCategory(identifier: NotificationCategory.location.rawValue, actions: [locationAction], intentIdentifiers: [])
+        
+        unCenter.setNotificationCategories([timerCategory, dateCategory, locationCategory])
     }
     
     func getAttachment(forId id: NotificationAttachmentID) -> UNNotificationAttachment? {
@@ -60,6 +73,7 @@ class UNService: NSObject {
         content.body = "Your timer is all done"
         content.sound = .default()
         content.badge = 1
+        content.categoryIdentifier = NotificationCategory.timer.rawValue
         
         if let attachment = getAttachment(forId: .timer) {
             content.attachments = [attachment]
@@ -76,6 +90,7 @@ class UNService: NSObject {
         content.body = "It is now the future"
         content.sound = .default()
         content.badge = 1
+        content.categoryIdentifier = NotificationCategory.date.rawValue
         
         if let attachment = getAttachment(forId: .date) {
             content.attachments = [attachment]
@@ -92,6 +107,7 @@ class UNService: NSObject {
         content.body = "Welcome back."
         content.sound = .default()
         content.badge = 1
+        content.categoryIdentifier = NotificationCategory.location.rawValue
         
         if let attachment = getAttachment(forId: .location) {
             content.attachments = [attachment]
