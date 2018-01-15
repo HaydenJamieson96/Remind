@@ -13,6 +13,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         UNService.shared.authorize()
+        CLService.shared.authorize()
+        NotificationCenter.default.addObserver(self, selector: #selector(didEnterRegion), name: NSNotification.Name("internalNotification.enteredRegion"), object: nil)
     }
 
     
@@ -38,10 +40,14 @@ class ViewController: UIViewController {
     @IBAction func onLocationTapped(_ sender: Any) {
         print("location")
         AlertService.actionSheet(in: self, title: "When I return") {
-            
+            CLService.shared.updateLocation()
         }
     }
     
+    @objc
+    func didEnterRegion() {
+        UNService.shared.locationRequest()
+    }
     
     
     
